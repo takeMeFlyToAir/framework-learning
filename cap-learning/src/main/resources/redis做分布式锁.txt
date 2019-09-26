@@ -1,0 +1,24 @@
+redis做分布式锁，要求
+1、安全性：只要大部分Redis节点都活着，客户端就可以获取和释放锁
+2、不会死锁：即便持有锁的客户端崩溃（crashed)或者网络被分裂（gets partitioned)，锁仍然可以被获取
+3、容错：只要大部分Redis节点都活着，客户端就可以获取和释放锁
+
+安全性指：redis的key是唯一的，所以可以保证
+不会死锁：加过期时间
+容错：
+
+单redis实例实现分布式锁的正确方法：
+1、SET resource_name my_random_value NX PX 30000
+resource_name是统一的
+my_random_value是随机的，但是每个客户端不能重复
+NX：是指resource_name这个key不存在的时候才执行，保证了安全性
+PX：失效时间，保证不会死锁
+删除key的要求，使用lua脚本：
+if redis.call("get",KEYS[1]) == ARGV[1] then
+    return redis.call("del",KEYS[1])
+else
+    return 0
+end
+删除key的时候，必须传入自己客户端获取锁时候获取的随机值，只有锁的值和传入的值相等的时候才能删除，保证了不会删除其他客户端的值；
+客户端A取得资源锁，但是紧接着被一个其他操作阻塞了，当客户端A运行完毕其他操作后要释放锁时，原来的锁早已超时并且被Redis自动释放，并且在这期间资源锁又被客户端B再次获取到。如果仅使用DEL命令将key删除，
+那么这种情况就会把客户端B的锁给删除掉。使用Lua脚本就不会存在这种情况，因为脚本仅会删除value等于客户端A的value的key（value相当于客户端的一个签名）

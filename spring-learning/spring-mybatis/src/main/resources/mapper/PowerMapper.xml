@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzr.spring.mybatis.mapper.PowerMapper">
+
+        <select id="findByRoleCode" resultType="com.zzr.spring.mybatis.entity.PowerEntity" parameterType="java.lang.Integer">
+            SELECT
+            id,
+            CODE,
+            remark,
+            (
+            SELECT
+            count(*)
+            FROM
+            rd_role_power
+            WHERE
+            rd_role_power.deleted = 0
+            AND rd_role_power.power_id = rd_power.id
+            AND rd_role_power.role_code = #{roleCode}
+            )as rolePowerFlag
+            FROM
+            rd_power
+            WHERE
+            deleted = 0;
+        </select>
+
+</mapper>

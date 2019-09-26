@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzr.sys.permission.mapper.UserMapper">
+
+    <select id="findPageList" parameterType="java.util.Map" resultType="com.zzr.sys.permission.entity.User">
+        SELECT *
+        FROM sys_user
+        WHERE sys_user.deleted = 0
+        <if test="account != null">
+            AND sys_user.account LIKE CONCAT('%',#{account},'%')
+        </if>
+        limit ${offset},${pageSize}
+    </select>
+
+    <update id="enable" parameterType="java.util.Map" statementType="PREPARED">
+        UPDATE sys_user  SET
+        sys_user.is_enable = #{isEnable}
+        WHERE deleted = 0
+        <if test="idList != null">
+            AND sys_user.`id` in <foreach collection="idList" item="item" open="(" separator="," close=")">#{item}</foreach>
+        </if>
+    </update>
+</mapper>

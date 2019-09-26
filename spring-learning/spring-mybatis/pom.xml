@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>spring-learning</artifactId>
+        <groupId>com.zzr.framework</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>spring-mybatis</artifactId>
+    <packaging>war</packaging>
+
+    <name>spring-mybatis Maven Webapp</name>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault><!--此处将dev设置为默认环境-->
+            </activation>
+        </profile>
+        <profile>
+            <id>pro</id>
+            <properties>
+                <env>pro</env>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.zzr.sso</groupId>
+            <artifactId>zzr-sso-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource><!--此处的设置是打包的时候排除不相关的目录-->
+                <directory>src/main/resources</directory><!--此处设置为上面在resources目录下创建的文件夹-->
+                <excludes>
+                    <exclude>env/*</exclude>
+                </excludes>
+                <filtering>true</filtering><!--开启过滤器，此处不能忽略！-->
+            </resource>
+            <resource><!--此处设置是配置相应配置文件夹的路径-->
+                <directory>src/main/resources/env/${env}</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

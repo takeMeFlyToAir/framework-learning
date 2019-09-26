@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzr.sys.permission.mapper.RolePermissionMapper">
+    <delete id="deleteByAppAndRoleId" parameterType="java.util.Map" statementType="PREPARED">
+        DELETE FROM sys_role_permission
+        WHERE sys_role_permission.deleted = 0
+        AND app_id = #{appId}
+        AND role_id = #{roleId}
+    </delete>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzr.sys.permission.mapper.UserRoleMapper">
+
+    <update id="deleteByUserId" parameterType="java.lang.Integer">
+        UPDATE sys_user_role  SET
+        sys_user_role.deleted = 1
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="deleteByRoleIds" parameterType="java.util.ArrayList">
+        UPDATE sys_user_role  SET
+        sys_user_role.deleted = 1
+        WHERE sys_user_role.deleted = 0
+        <if test="idList != null">
+            AND sys_user_role.`role_id` in <foreach collection="idList" item="item" open="(" separator="," close=")">#{item}</foreach>
+        </if>
+    </update>
+
+    <update id="deleteByUserIds" parameterType="java.util.ArrayList">
+        UPDATE sys_user_role  SET
+        sys_user_role.deleted = 1
+        WHERE sys_user_role.deleted = 0
+        <if test="idList != null">
+            AND sys_user_role.`user_id` in <foreach collection="idList" item="item" open="(" separator="," close=")">#{item}</foreach>
+        </if>
+    </update>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzr.sys.permission.mapper.RoleMapper">
+
+    <update id="enable" parameterType="java.util.Map" >
+        UPDATE sys_role  SET
+        sys_role.is_enable = #{isEnable}
+        WHERE sys_role.deleted = 0
+        <if test="idList != null">
+            AND sys_role.`id` in <foreach collection="idList" item="item" open="(" separator="," close=")">#{item}</foreach>
+        </if>
+    </update>
+
+
+    <select id="findPageList" parameterType="java.util.Map" resultType="com.zzr.sys.permission.entity.Role">
+        SELECT *
+        FROM sys_role
+        WHERE sys_role.deleted = 0
+        <if test="name != null">
+            AND sys_role.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        limit ${offset},${pageSize}
+    </select>
+</mapper>
